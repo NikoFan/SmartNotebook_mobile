@@ -81,6 +81,10 @@ class MainActivity : ComponentActivity() {
                 viewModelInstance = vm_instance
             )
 
+            ButtonWidgets.CreateAcceptButton(
+                text = "Выполнил",
+                onClick = { vm_instance.AddNewCard() }
+            )
 
             // Кнопка: очистить всё
             Button(
