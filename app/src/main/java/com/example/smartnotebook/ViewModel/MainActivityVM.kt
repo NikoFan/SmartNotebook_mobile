@@ -19,6 +19,47 @@ class MainActivityVM(private val cardsDao: CardDao, private val recordDao: Recor
         return recordDao.getCurrentRecordsData(id=id)
     }
 
+    fun AddNewCard(){
+        viewModelScope.launch {
+            try {
+                // 1. Вставляем запись и получаем её ID напрямую
+                val recordId = recordDao.insertRecord(
+                    RecordsEntity(
+                        name = "Прогулка",
+                        category = "Активность ${System.currentTimeMillis()}",
+                        create_date = System.currentTimeMillis()
+                    )
+                )
+
+                // 2. Используем полученный ID для карточки
+                cardsDao.insertCard(
+                    CardEntity(
+                        streak_count = 0,
+                        last_usage = System.currentTimeMillis(),
+                        all_usage_count = 1,
+                        record_id_fk = recordId // ← сразу используем ID
+                    )
+                )
+
+                println("Создана запись с ID: $recordId")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun clearAllData() {
+        viewModelScope.launch {
+            try {
+                cardsDao.deleteCardsData() // если есть
+                recordDao.clearRecordsTable()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun addCard() {
         println("delete old")
 //        viewModelScope.launch {
