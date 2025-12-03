@@ -143,7 +143,7 @@ fun CreateOldRecordsViewDisplay(
                         .padding(10.dp)
                         .fillMaxWidth()
                         .border(
-                            width = 0.2f.dp,
+                            width = 1f.dp,
                             color = Color.White,
                             shape = RoundedCornerShape(10.dp)
                         )
@@ -153,21 +153,15 @@ fun CreateOldRecordsViewDisplay(
                             id = card.record_id_fk
                         ).collectAsStateWithLifecycle(null).value?.name
                     )
-                    Text(text = "ИМЯ ${
-                        viewModelInstance.getCurrentRec(
-                            id = card.record_id_fk
-                        ).collectAsStateWithLifecycle(null).value?.name
-                    }")
-                    Text(text = "Карточка ${card.streak_count}")
-                    Text(text = "FK: ${card.record_id_fk}")
-                    Text(text = "Категория ${
-                        viewModelInstance.getCurrentRec(
-                            id = card.record_id_fk
-                        ).collectAsStateWithLifecycle(null).value?.category
-                    }")
+
+                    TextWidgets.CreateStatisticPanel(
+                        all_counts = card.all_usage_count.toString(),
+                        streak_count = card.streak_count.toString()
+                    )
+                    TextWidgets.CreateDayInformation()
 
                     ButtonWidgets.CreateAcceptButton(
-                        text = "Выполнил",
+                        text = "Создать новую",
                         onClick = { viewModelInstance.AddNewCard() }
                     )
                 }

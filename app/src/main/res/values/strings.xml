@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SmartNotebook</string>
     <integer name="title_font_size">40</integer>
+    <integer name="big_font_size">30</integer>
 </resources>
