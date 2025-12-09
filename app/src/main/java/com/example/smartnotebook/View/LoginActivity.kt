@@ -41,8 +41,11 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     private fun UiConstructor(){ // Конструктор интерфейса
-        val viewModelInstance = LoginActivityVM(
-            userDaoInstance = app.database.userDao())
+        val viewModelInstance = remember {
+            LoginActivityVM(
+                userDaoInstance = app.database.userDao())
+        }
+
 
         // Ожидание изменений в viewModelInstance.activeUserIdNumber
         LaunchedEffect(viewModelInstance.activeUserIdNumber) {
@@ -50,6 +53,8 @@ class LoginActivity : ComponentActivity() {
                 // Пользователь найден
                 println("Correct with ID: ${viewModelInstance.activeUserIdNumber}")
 
+            } else {
+                println("no result: ${viewModelInstance.activeUserIdNumber}")
             }
         }
         LazyColumn (

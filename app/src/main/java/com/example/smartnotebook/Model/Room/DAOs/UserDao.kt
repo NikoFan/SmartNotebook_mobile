@@ -15,14 +15,14 @@ interface UserDao {
 
     // Получение данных о пользователе по ID
     @Query("Select * from users_table where user_id = :id")
-    fun getUserData(id: Long) : UserEntity?
+    suspend fun getUserData(id: Long) : UserEntity?
 
-//    @Query("Select * from users_table")
-//    fun getUsersData() : Flow<List<UserEntity>>
+    @Query("Select * from users_table")
+    fun getUsersData() : Flow<List<UserEntity>>
 
     @Query("SELECT user_id FROM users_table WHERE " +
             "login = :inputLoginData AND password = :inputPasswordData")
-    fun getUserId(
+    suspend fun getUserId(
         inputLoginData: String,
         inputPasswordData: String
     ) : Long?
