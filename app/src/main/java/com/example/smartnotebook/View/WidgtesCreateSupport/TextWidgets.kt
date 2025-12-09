@@ -1,22 +1,29 @@
 package com.example.smartnotebook.View.WidgtesCreateSupport
 
 import android.icu.util.Calendar
+import android.view.Surface
 import android.widget.Space
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.integerResource
@@ -45,8 +52,8 @@ object TextWidgets {
         "Saturday" to "Воскресенье"
     )
     @Composable
-    fun CreateWindowTitleWidget(
-        text_message: String?
+    fun Create_WindowTitleTextWidget(
+        widget_text: String?
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -56,7 +63,7 @@ object TextWidgets {
         ) {
             println("РАЗМЕР ТЕКСТА: $TITLE_FONT_SIZE")
             Text(
-                text = text_message.toString(),
+                text = widget_text.toString(),
                 fontSize = integerResource(TITLE_FONT_SIZE).sp,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -67,82 +74,4 @@ object TextWidgets {
         }
     }
 
-    @Composable
-    fun CreateStatisticPanel(
-        all_counts: String?,
-        streak_count: String?
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Text(
-                lineHeight = 40.sp,
-                text = "Всего:\n${all_counts}",
-                textAlign = TextAlign.Center,
-                fontSize = integerResource(BIG_FONT_SIZE).sp,
-                maxLines = 2,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                lineHeight = 40.sp,
-                text = "Подряд:\n${streak_count}",
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                color = Color.White,
-                fontSize = integerResource(BIG_FONT_SIZE).sp
-            )
-        }
-    }
-
-
-    @Composable
-    fun CreateDayInformation(){
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            val current_day = Calendar.getInstance()
-            val date_format = SimpleDateFormat("EEEE", Locale.getDefault())
-            val day_of_week = date_format.format(current_day.time)
-            val today_date = SimpleDateFormat("d", Locale.getDefault())
-                .format(current_day.time)
-            Text(
-                text =days_translate[day_of_week].toString(),
-                fontSize = integerResource(TITLE_FONT_SIZE).sp,
-                color = Color.White
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-                for (i in 1..5){
-                    DayCell(
-                        day_number = today_date,
-                        cell_color = Color.Green, // if () colorResource(R.color.green_button_color),
-                        today_status = false
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun DayCell(
-        day_number: String,
-        cell_color: Color,
-        today_status: Boolean
-    ) {
-
-    }
 }

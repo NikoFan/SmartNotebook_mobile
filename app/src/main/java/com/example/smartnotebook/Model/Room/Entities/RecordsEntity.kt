@@ -10,5 +10,7 @@ data class RecordsEntity(
 
     val name: String,
     val category: String,
+    val description: String,
+    val goal_date: Long,
     val create_date: Long // Используется в качестве отсчета в мл.с.
 )

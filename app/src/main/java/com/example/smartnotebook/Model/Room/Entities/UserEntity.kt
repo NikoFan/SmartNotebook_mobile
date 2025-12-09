@@ -8,5 +8,6 @@ data class UserEntity (
     @PrimaryKey(autoGenerate = true) // Автосоздание ключей
     val user_id: Long = 0,
 
-    val login: String
+    val login: String,
+    val password: String
 )

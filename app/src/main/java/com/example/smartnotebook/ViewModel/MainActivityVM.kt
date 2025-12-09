@@ -2,57 +2,44 @@ package com.example.smartnotebook.ViewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartnotebook.Model.Room.DAOs.CardDao
 import com.example.smartnotebook.Model.Room.DAOs.RecordDao
-import com.example.smartnotebook.Model.Room.Entities.CardEntity
 import com.example.smartnotebook.Model.Room.Entities.RecordsEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class MainActivityVM(private val cardsDao: CardDao, private val recordDao: RecordDao) : ViewModel() {
+class MainActivityVM(private val record_dao: RecordDao) : ViewModel() {
 
-    val allCards = cardsDao.getAllCardsData()
 
-    val allRecords = recordDao.getAllRecordsData()
+    val allRecords = record_dao.getAllRecordsData()
 
     fun getCurrentRec(id: Long) : Flow<RecordsEntity?>{
-        return recordDao.getCurrentRecordsData(id=id)
+        return record_dao.getCurrentRecordsData(id=id)
     }
 
     fun AddNewCard(){
-        viewModelScope.launch {
-            try {
-                // 1. Вставляем запись и получаем её ID напрямую
-                val recordId = recordDao.insertRecord(
-                    RecordsEntity(
-                        name = "Прогулка",
-                        category = "Активность ${System.currentTimeMillis()}",
-                        create_date = System.currentTimeMillis()
-                    )
-                )
-
-                // 2. Используем полученный ID для карточки
-                cardsDao.insertCard(
-                    CardEntity(
-                        streak_count = 0,
-                        last_usage = System.currentTimeMillis(),
-                        all_usage_count = 1,
-                        record_id_fk = recordId // ← сразу используем ID
-                    )
-                )
-
-                println("Создана запись с ID: $recordId")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        println("Пока не работает")
+//        viewModelScope.launch {
+//            try {
+//                // 1. Вставляем запись и получаем её ID напрямую
+//                val recordId = recordDao.insertRecord(
+//                    RecordsEntity(
+//                        name = "Прогулка",
+//                        category = "Активность ${System.currentTimeMillis()}",
+//                        create_date = System.currentTimeMillis()
+//                    )
+//                )
+//
+//                println("Создана запись с ID: $recordId")
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
     }
 
     fun clearAllData() {
         viewModelScope.launch {
             try {
-                cardsDao.deleteCardsData() // если есть
-                recordDao.clearRecordsTable()
+                record_dao.clearRecordsTable()
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -61,7 +48,7 @@ class MainActivityVM(private val cardsDao: CardDao, private val recordDao: Recor
     }
 
     fun addCard() {
-        println("delete old")
+        println("Пока не функционирует")
 //        viewModelScope.launch {
 //            cardsDao.deleteCardsData()
 //        }
@@ -69,32 +56,32 @@ class MainActivityVM(private val cardsDao: CardDao, private val recordDao: Recor
 //        viewModelScope.launch {
 //            recordDao.clearRecordsTable()
 //        }
-        println("add new")
-        // Добавление нового хобби
-        viewModelScope.launch {
-            recordDao.insertRecord(
-                RecordsEntity(
-                    name="Прогулка",
-                    category = "Активность22",
-                    create_date = System.currentTimeMillis()
-                )
-            )
-
-        }
-
-        viewModelScope.launch {
-            cardsDao.insertCard(
-                CardEntity(
-                    streak_count = 0,
-                    last_usage = System.currentTimeMillis(),
-                    all_usage_count = 1,
-                    record_id_fk = 1
-                )
-            )
-        }
-
-
+//        println("add new")
+//        // Добавление нового хобби
+//        viewModelScope.launch {
+//            recordDao.insertRecord(
+//                RecordsEntity(
+//                    name="Прогулка",
+//                    category = "Активность22",
+//                    create_date = System.currentTimeMillis()
+//                )
+//            )
+//
+//        }
+//
+//        viewModelScope.launch {
+//            cardsDao.insertCard(
+//                CardEntity(
+//                    streak_count = 0,
+//                    last_usage = System.currentTimeMillis(),
+//                    all_usage_count = 1,
+//                    record_id_fk = 1
+//                )
+//            )
+//        }
+//    }
     }
+
 
 
 }
