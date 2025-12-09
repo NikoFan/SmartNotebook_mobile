@@ -15,7 +15,7 @@ import com.example.smartnotebook.Model.Room.Entities.UserEntity
         UserEntity::class, // Таблица с пользователем
         RecordsEntity::class // Таблица с заметками
                ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -35,7 +35,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "notebook_database3")
+                    "notebook_database4")
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance // Созданный экземпляр сохраняем в INSTANCE

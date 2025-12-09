@@ -42,18 +42,9 @@ object TextWidgets {
     private val TITLE_FONT_SIZE = R.integer.title_font_size
     private val BIG_FONT_SIZE = R.integer.big_font_size
 
-    private val days_translate: Map<String, String> = mapOf(
-        "Monday" to "Понедельник",
-        "Tuesday" to "Вторник",
-        "Wednesday" to "Среда",
-        "Thursday" to "Четверг",
-        "Friday" to "Пятница",
-        "Sunday" to "Суббота",
-        "Saturday" to "Воскресенье"
-    )
     @Composable
     fun Create_WindowTitleTextWidget(
-        widget_text: String?
+        contentTextData: String?
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -63,7 +54,7 @@ object TextWidgets {
         ) {
             println("РАЗМЕР ТЕКСТА: $TITLE_FONT_SIZE")
             Text(
-                text = widget_text.toString(),
+                text = contentTextData.toString(),
                 fontSize = integerResource(TITLE_FONT_SIZE).sp,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
