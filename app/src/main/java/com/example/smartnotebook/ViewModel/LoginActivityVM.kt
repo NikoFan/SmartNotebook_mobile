@@ -13,20 +13,39 @@ class LoginActivityVM(private val userDaoInstance: UserDao) : ViewModel() {
     private var _activeUserIdNumber by mutableStateOf<Long?>(null)
     val activeUserIdNumber: Long? get() = _activeUserIdNumber
 
+    // Статус ошибки
+    private var _signInError by mutableStateOf<String?>(null)
+    val signInError: String? get() = _signInError
+
+    // Сброс статуса
+    fun clearError() {
+        _signInError = null
+    }
+
 
     fun SearchUserByInputData(login: String, pass: String) {
+
         if (login.isNotEmpty() && pass.isNotEmpty()) {
             viewModelScope.launch {
                 try {
                     val userId = userDaoInstance.getUserId(
                         inputLoginData = login, // neoleg
                         inputPasswordData = pass) // 123
-                    println("taken result: $userId")
-                    _activeUserIdNumber = userId
+                    // Проверка ответа Room
+                    if (userId != null){
+                        _activeUserIdNumber = userId
+                        _signInError = null
+                    } else {
+                        _signInError = "Неверный логин или пароль"
+                    }
+
                 } catch (e: Exception) {
+                    _signInError = "Ошибка на сервере"
                     e.printStackTrace()
                 }
             }
+            return
         }
+        _signInError = "Заполните все поля"
     }
 }

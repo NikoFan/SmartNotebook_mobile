@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green_button_color">#A7C957</color>
     <color name="gray_button_color">#676E79</color>
+    <color name="red_error_color">#772828</color>
     <color name="main_background_color">#323843</color>
     <color name="second_background_color">#22262E</color>
 </resources>
