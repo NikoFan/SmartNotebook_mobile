@@ -3,7 +3,8 @@
     <integer name="title_font_size">40</integer>
     <integer name="big_font_size">30</integer>
     <integer name="button_font_size">30</integer>
-    <integer name="textfield_hint_font_size">30</integer>
+    <integer name="textfield_hint_font_size">24</integer>
+    <integer name="record_display_font_size">24</integer>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
 </resources>
