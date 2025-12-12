@@ -6,33 +6,50 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartnotebook.Model.Room.DAOs.UserDao
+import com.example.smartnotebook.Model.Room.Entities.UserEntity
 import kotlinx.coroutines.launch
 
 class SignUpActivityVM(private val userDaoInstance: UserDao) : ViewModel() {
 
+    // Прошел ли проверку
     private var _isLoginAndPasswordExist by mutableStateOf<Boolean>(true)
     val isLoginAndPasswordExist: Boolean get() = _isLoginAndPasswordExist
+
+    private var _newUserAccountId by mutableStateOf<Long?>(null)
+    val newUserAccountId: Long? get() = _newUserAccountId
 
     // Статус ошибки
     private var _signInError by mutableStateOf<String?>(null)
     val signInError: String? get() = _signInError
 
-    // Сброс статуса
-    fun clearError() {
-        _signInError = null
+
+    fun InsertNewUserToRoom(
+        userEntityExample: UserEntity
+    ) {
+        viewModelScope.launch {
+            try {
+                _newUserAccountId = userDaoInstance.insertUser(
+                    user = userEntityExample
+                )
+
+            } catch (e: Exception) {
+                _signInError = "Ошибка добавления пользователя"
+                e.printStackTrace()
+            }
+        }
     }
 
-
-    fun SearchUserByInputDataAndAddUser(login: String, pass: String) {
+    fun SearchExistUserAccountByInputData(login: String, pass: String) {
 
         if (login.isNotEmpty() && pass.isNotEmpty()) {
             viewModelScope.launch {
                 try {
                     val userId = userDaoInstance.getUserId(
                         inputLoginData = login, // neoleg
-                        inputPasswordData = pass) // 123
+                        inputPasswordData = pass
+                    ) // 123
                     // Проверка ответа Room
-                    if (userId != null){
+                    if (userId != null) {
                         _signInError = "Введеные данные недоступны"
                     } else {
                         _isLoginAndPasswordExist = false

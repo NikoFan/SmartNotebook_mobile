@@ -16,13 +16,6 @@ class LoginActivityVM(private val userDaoInstance: UserDao) : ViewModel() {
     // Статус ошибки
     private var _signInError by mutableStateOf<String?>(null)
     val signInError: String? get() = _signInError
-
-    // Сброс статуса
-    fun clearError() {
-        _signInError = null
-    }
-
-
     fun SearchUserByInputData(login: String, pass: String) {
 
         if (login.isNotEmpty() && pass.isNotEmpty()) {
@@ -30,9 +23,10 @@ class LoginActivityVM(private val userDaoInstance: UserDao) : ViewModel() {
                 try {
                     val userId = userDaoInstance.getUserId(
                         inputLoginData = login, // neoleg
-                        inputPasswordData = pass) // 123
+                        inputPasswordData = pass
+                    ) // 123
                     // Проверка ответа Room
-                    if (userId != null){
+                    if (userId != null) {
                         _activeUserIdNumber = userId
                         _signInError = null
                     } else {
