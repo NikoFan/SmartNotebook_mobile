@@ -15,7 +15,7 @@ import com.example.smartnotebook.Model.Room.Entities.UserEntity
         UserEntity::class, // Таблица с пользователем
         RecordsEntity::class // Таблица с заметками
                ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
