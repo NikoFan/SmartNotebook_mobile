@@ -5,4 +5,5 @@
     <integer name="button_font_size">30</integer>
     <integer name="textfield_hint_font_size">30</integer>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
 </resources>
