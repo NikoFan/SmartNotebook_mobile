@@ -65,4 +65,45 @@ object TextWidgets {
         }
     }
 
+
+    @Composable
+    fun Create_RecordDisplayText(
+        content: String,
+        onClickParam: () -> Unit
+    ){
+        Surface (
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            color = Color.Transparent,
+            onClick = onClickParam
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth(0.7f),
+                    text = content,
+                    fontSize = integerResource(R.integer.record_display_font_size).sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.MiddleEllipsis,
+                    maxLines = 1
+                )
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .fillMaxHeight(0.7f)
+                        .background(Color.LightGray)
+                )
+            }
+
+        }
+
+    }
+
 }

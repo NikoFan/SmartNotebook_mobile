@@ -32,6 +32,7 @@ import com.example.smartnotebook.View.WidgtesCreateSupport.TextFieldWidget
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextWidgets
 import com.example.smartnotebook.View.ui.theme.SmartNotebookTheme
 import com.example.smartnotebook.ViewModel.LoginActivityVM
+import com.example.smartnotebook.ViewModel.StaticClass
 
 class LoginActivity : ComponentActivity() {
     private val app: MyApplication // Room
@@ -68,6 +69,15 @@ class LoginActivity : ComponentActivity() {
             if (viewModelInstance.activeUserIdNumber != null) {
                 // Пользователь найден
                 println("Correct with ID: ${viewModelInstance.activeUserIdNumber}")
+                StaticClass.SetActiveId(
+                    latestIdNumber = viewModelInstance.activeUserIdNumber
+                )
+                startActivity(
+                    Intent(
+                        context,
+                        MainActivity::class.java
+                    )
+                )
 
             } else {
                 println("inCorrect data: ${viewModelInstance.activeUserIdNumber}")

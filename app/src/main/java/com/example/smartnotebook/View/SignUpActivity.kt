@@ -9,12 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.smartnotebook.Model.Room.Entities.UserEntity
 import com.example.smartnotebook.MyApplication
 import com.example.smartnotebook.R
 import com.example.smartnotebook.View.WidgtesCreateSupport.ButtonWidgets
@@ -34,8 +32,8 @@ import com.example.smartnotebook.View.WidgtesCreateSupport.ErrorsShowsWidgets
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextFieldWidget
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextWidgets
 import com.example.smartnotebook.View.ui.theme.SmartNotebookTheme
-import com.example.smartnotebook.ViewModel.LoginActivityVM
 import com.example.smartnotebook.ViewModel.SignUpActivityVM
+import com.example.smartnotebook.ViewModel.StaticClass
 
 class SignUpActivity : ComponentActivity() {
     private val app: MyApplication // Room
@@ -66,21 +64,46 @@ class SignUpActivity : ComponentActivity() {
         val snackbarHostState = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope() // Корутина
 
+        // Поля для вводимых данных
+        var loginInput by remember { mutableStateOf("") }
+        var passwordInput by remember { mutableStateOf("") }
 
-        // Ожидание изменений в viewModelInstance.activeUserIdNumber
+
+
+        // Ожидание изменений в viewModelInstance.isLoginAndPasswordExist
         LaunchedEffect(viewModelInstance.isLoginAndPasswordExist) {
             if (!viewModelInstance.isLoginAndPasswordExist) {
                 // Пользователь найден
                 println("Аккаунта с такими данными не существует: ${viewModelInstance.isLoginAndPasswordExist}")
-                startActivity(
-                    Intent(
-                        context,
-                        LoginActivity::class.java
+                viewModelInstance.InsertNewUserToRoom(
+                    userEntityExample = UserEntity(
+                        login = loginInput,
+                        password = passwordInput
                     )
                 )
 
             } else {
                 println("аккаунт уже занят: ${viewModelInstance.isLoginAndPasswordExist}")
+            }
+        }
+
+        // Отслеживание получения ID у созданного аккаунта
+        LaunchedEffect(viewModelInstance.newUserAccountId) {
+            if (viewModelInstance.newUserAccountId != null) {
+                // Пользователь найден
+                println("Аккаунта Создан id: ${viewModelInstance.newUserAccountId}")
+                StaticClass.SetActiveId(
+                    latestIdNumber = viewModelInstance.newUserAccountId
+                )
+                startActivity(
+                    Intent(
+                        context,
+                        MainActivity::class.java
+                    )
+                )
+
+            } else {
+                println("аккаунт не создан: ${viewModelInstance.newUserAccountId}")
             }
         }
         LazyColumn (
@@ -101,7 +124,7 @@ class SignUpActivity : ComponentActivity() {
 
             item {
                 // Инпут логина
-                var loginInput by remember { mutableStateOf("") }
+
                 TextFieldWidget.Create_UserMainInputField(
                     hintParam = "Логин",
                     valueParam = loginInput,
@@ -113,7 +136,6 @@ class SignUpActivity : ComponentActivity() {
                 )
 
                 // Инпут пароля
-                var passwordInput by remember { mutableStateOf("") }
                 TextFieldWidget.Create_UserMainInputField(
                     hintParam = "Пароль",
                     valueParam = passwordInput,
@@ -127,7 +149,7 @@ class SignUpActivity : ComponentActivity() {
                 ButtonWidgets.Create_MainAccept_Button(
                     contentData = "Создать аккаунт"
                 ){
-                    viewModelInstance.SearchUserByInputDataAndAddUser(
+                    viewModelInstance.SearchExistUserAccountByInputData(
                         login = loginInput,
                         pass = passwordInput
                     )
