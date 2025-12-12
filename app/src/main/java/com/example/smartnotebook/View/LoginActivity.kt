@@ -1,5 +1,7 @@
 package com.example.smartnotebook.View
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,8 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     private fun UiConstructor(){ // Конструктор интерфейса
+
+        val context: Context = LocalContext.current
         // Объект view model
         val viewModelInstance = remember {
             LoginActivityVM(
@@ -126,10 +131,13 @@ class LoginActivity : ComponentActivity() {
                     }
                 }
                 ButtonWidgets.Create_SecondAction_Button(
-                    contentData = "Создать аккаунт"
+                    contentData = "нет аккаунта? создайте!"
                 ){
-                    println(
-                        "Создать аккаунт"
+                    startActivity(
+                        Intent(
+                            context,
+                            SignUpActivity::class.java
+                        )
                     )
                 }
             }
