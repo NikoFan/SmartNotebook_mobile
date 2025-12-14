@@ -4,42 +4,65 @@ package com.example.smartnotebook.ViewModel
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartnotebook.Model.Room.DAOs.UserDao
-import com.example.smartnotebook.Model.Room.Entities.UserEntity
-import kotlinx.coroutines.launch
+import com.example.smartnotebook.Model.LoginRequest
+import com.example.smartnotebook.RetrofitActions.ApiFactory
 
-class LoginActivityVM(private val userDaoInstance: UserDao) : ViewModel() {
+
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+
+class LoginActivityVM : ViewModel() {
 
     private var _activeUserIdNumber by mutableStateOf<Long?>(null)
     val activeUserIdNumber: Long? get() = _activeUserIdNumber
 
     // Статус ошибки
-    private var _signInError by mutableStateOf<String?>(null)
-    val signInError: String? get() = _signInError
-    fun SearchUserByInputData(login: String, pass: String) {
+    private var _statusSignInError by mutableStateOf<String?>(null)
+    val statusSignInError: String? get() = _statusSignInError
 
-        if (login.isNotEmpty() && pass.isNotEmpty()) {
-            viewModelScope.launch {
-                try {
-                    val userId = userDaoInstance.getUserId(
-                        inputLoginData = login, // neoleg
-                        inputPasswordData = pass
-                    ) // 123
-                    // Проверка ответа Room
-                    if (userId != null) {
-                        _activeUserIdNumber = userId
-                        _signInError = null
-                    } else {
-                        _signInError = "Неверный логин или пароль"
-                    }
-
-                } catch (e: Exception) {
-                    _signInError = "Ошибка на сервере"
-                    e.printStackTrace()
-                }
-            }
+    fun logInClientByInputData(
+        login: String,
+        password: String
+    ){
+        _statusSignInError = null
+        if (login.isEmpty() or password.isEmpty()){
+            _statusSignInError = "Заполните пустые поля"
             return
         }
-        _signInError = "Заполните все поля"
+        viewModelScope.launch {
+            try {
+                val request = LoginRequest(
+                    user_login = login,
+                    user_password = password)
+                val response = ApiFactory.apiService.login(
+                    request = request)
+
+                if (response.isSuccessful) {
+                    val user = response.body()
+                    // Успешная регистрация — перейти на главный экран
+                    if (user != null){
+                        println(user)
+                        _activeUserIdNumber = user.user_id.toLong()
+                    } else {
+                        _statusSignInError = "Ошибка на сервере"
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = try {
+                        // Парсим JSON вручную или через Gson
+                        val errorJson = JSONObject(errorBody)
+                        errorJson.getString("detail") // ← "Invalid password"
+                    } catch (e: Exception) {
+                        "Проверьте данные"
+                    }
+                    _statusSignInError = errorMessage
+                }
+            } catch (e: Exception) {
+                // Сетевая ошибка, таймаут и т.д.
+                _statusSignInError = "Ошибка отправки данных"
+            }
+        }
     }
+
 }
