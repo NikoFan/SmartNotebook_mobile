@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.smartnotebook.MyApplication
 import com.example.smartnotebook.R
 import com.example.smartnotebook.View.WidgtesCreateSupport.ButtonWidgets
 import com.example.smartnotebook.View.WidgtesCreateSupport.ErrorsShowsWidgets
@@ -35,9 +34,6 @@ import com.example.smartnotebook.ViewModel.LoginActivityVM
 import com.example.smartnotebook.ViewModel.StaticClass
 
 class LoginActivity : ComponentActivity() {
-    private val app: MyApplication // Room
-        get() = applicationContext as MyApplication
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,8 +51,7 @@ class LoginActivity : ComponentActivity() {
         val context: Context = LocalContext.current
         // Объект view model
         val viewModelInstance = remember {
-            LoginActivityVM(
-                userDaoInstance = app.database.userDao())
+            LoginActivityVM()
         }
 
         // Атрибуты ошибки
@@ -127,11 +122,10 @@ class LoginActivity : ComponentActivity() {
                 ButtonWidgets.Create_MainAccept_Button(
                     contentData = "Войти"
                 ){
-                    viewModelInstance.SearchUserByInputData(
+                    viewModelInstance.logInClientByInputData(
                         login = loginInput,
-                        pass = passwordInput
+                        password = passwordInput
                     )
-
                     if (viewModelInstance.activeUserIdNumber == null){
                         // Вызов всплывающего сообщения
                         ErrorsShowsWidgets.CallSnackBar(
@@ -153,9 +147,9 @@ class LoginActivity : ComponentActivity() {
             }
             item {
                 // Показ ошибки
-                if (viewModelInstance.signInError != null) {
+                if (viewModelInstance.statusSignInError != null) {
                     ErrorsShowsWidgets.ErrorSnackBar(
-                        message = viewModelInstance.signInError.toString(),
+                        message = viewModelInstance.statusSignInError.toString(),
                         snackbarHostState = snackbarHostState
                     )
                 }

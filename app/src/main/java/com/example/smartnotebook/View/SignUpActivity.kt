@@ -24,8 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.smartnotebook.Model.Room.Entities.UserEntity
-import com.example.smartnotebook.MyApplication
 import com.example.smartnotebook.R
 import com.example.smartnotebook.View.WidgtesCreateSupport.ButtonWidgets
 import com.example.smartnotebook.View.WidgtesCreateSupport.ErrorsShowsWidgets
@@ -36,9 +34,6 @@ import com.example.smartnotebook.ViewModel.SignUpActivityVM
 import com.example.smartnotebook.ViewModel.StaticClass
 
 class SignUpActivity : ComponentActivity() {
-    private val app: MyApplication // Room
-        get() = applicationContext as MyApplication
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,8 +51,7 @@ class SignUpActivity : ComponentActivity() {
 
         // Объект view model
         val viewModelInstance = remember {
-            SignUpActivityVM(
-                userDaoInstance = app.database.userDao())
+            SignUpActivityVM()
         }
 
         // Атрибуты ошибки
@@ -75,12 +69,7 @@ class SignUpActivity : ComponentActivity() {
             if (!viewModelInstance.isLoginAndPasswordExist) {
                 // Пользователь найден
                 println("Аккаунта с такими данными не существует: ${viewModelInstance.isLoginAndPasswordExist}")
-                viewModelInstance.InsertNewUserToRoom(
-                    userEntityExample = UserEntity(
-                        login = loginInput,
-                        password = passwordInput
-                    )
-                )
+
 
             } else {
                 println("аккаунт уже занят: ${viewModelInstance.isLoginAndPasswordExist}")
@@ -149,10 +138,6 @@ class SignUpActivity : ComponentActivity() {
                 ButtonWidgets.Create_MainAccept_Button(
                     contentData = "Создать аккаунт"
                 ){
-                    viewModelInstance.SearchExistUserAccountByInputData(
-                        login = loginInput,
-                        pass = passwordInput
-                    )
 
                     if (viewModelInstance.isLoginAndPasswordExist == true){
                         // Вызов всплывающего сообщения
@@ -175,9 +160,9 @@ class SignUpActivity : ComponentActivity() {
             }
             item {
                 // Показ ошибки
-                if (viewModelInstance.signInError != null) {
+                if (viewModelInstance.statusSignInError != null) {
                     ErrorsShowsWidgets.ErrorSnackBar(
-                        message = viewModelInstance.signInError.toString(),
+                        message = viewModelInstance.statusSignInError.toString(),
                         snackbarHostState = snackbarHostState
                     )
                 }

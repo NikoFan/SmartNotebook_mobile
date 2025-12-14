@@ -37,18 +37,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.smartnotebook.ViewModel.MainActivityVM
 import com.example.smartnotebook.ui.theme.SmartNotebookTheme
-import com.example.smartnotebook.MyApplication
 import com.example.smartnotebook.R
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextWidgets
 import com.example.smartnotebook.ViewModel.StaticClass
 
 
 class MainActivity : ComponentActivity() {
-
-    private val app: MyApplication // Room
-        get() = applicationContext as MyApplication
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,8 +56,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun UiConstructor(){ // Конструктор интерфейса
-        val vm_instance = MainActivityVM(
-            record_dao = app.database.recordDao())
+        val vm_instance = MainActivityVM()
 
         println(StaticClass.activeAccountId)
 
