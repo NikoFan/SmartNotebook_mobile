@@ -61,6 +61,7 @@ class SignUpActivity : ComponentActivity() {
         // Поля для вводимых данных
         var loginInput by remember { mutableStateOf("") }
         var passwordInput by remember { mutableStateOf("") }
+        var mailInput by remember { mutableStateOf("") }
 
 
 
@@ -124,6 +125,17 @@ class SignUpActivity : ComponentActivity() {
                     }
                 )
 
+                // Инпут почты
+                TextFieldWidget.Create_UserMainInputField(
+                    hintParam = "Почта",
+                    valueParam = mailInput,
+                    labelParam = "Укажите почту",
+                    placeholderParam = "Введите...",
+                    onValueChangeParam = { new ->
+                        mailInput = new
+                    }
+                )
+
                 // Инпут пароля
                 TextFieldWidget.Create_UserMainInputField(
                     hintParam = "Пароль",
@@ -138,7 +150,11 @@ class SignUpActivity : ComponentActivity() {
                 ButtonWidgets.Create_MainAccept_Button(
                     contentData = "Создать аккаунт"
                 ){
-
+                    viewModelInstance.registerUserFromDatabase(
+                        login = loginInput,
+                        password = passwordInput,
+                        mail = mailInput
+                    )
                     if (viewModelInstance.isLoginAndPasswordExist == true){
                         // Вызов всплывающего сообщения
                         ErrorsShowsWidgets.CallSnackBar(
