@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import com.example.smartnotebook.View.WidgtesCreateSupport.ErrorsShowsWidgets
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextFieldWidget
 import com.example.smartnotebook.View.WidgtesCreateSupport.TextWidgets
 import com.example.smartnotebook.View.ui.theme.SmartNotebookTheme
+import com.example.smartnotebook.ViewModel.RegistrationState
 import com.example.smartnotebook.ViewModel.SignUpActivityVM
 import com.example.smartnotebook.ViewModel.StaticClass
 
@@ -62,6 +64,8 @@ class SignUpActivity : ComponentActivity() {
         var loginInput by remember { mutableStateOf("") }
         var passwordInput by remember { mutableStateOf("") }
         var mailInput by remember { mutableStateOf("") }
+
+        val state by viewModelInstance.uiState.collectAsState()
 
 
 
@@ -150,11 +154,12 @@ class SignUpActivity : ComponentActivity() {
                 ButtonWidgets.Create_MainAccept_Button(
                     contentData = "Создать аккаунт"
                 ){
-                    viewModelInstance.registerUserFromDatabase(
+                    viewModelInstance.startRegistration(
                         login = loginInput,
                         password = passwordInput,
-                        mail = mailInput
+                        email = mailInput
                     )
+
                     if (viewModelInstance.isLoginAndPasswordExist == true){
                         // Вызов всплывающего сообщения
                         ErrorsShowsWidgets.CallSnackBar(
@@ -182,9 +187,13 @@ class SignUpActivity : ComponentActivity() {
                         snackbarHostState = snackbarHostState
                     )
                 }
+                if (state is RegistrationState.Error) {
+                    ErrorsShowsWidgets.ErrorSnackBar(
+                        message = viewModelInstance.statusSignInError.toString(),
+                        snackbarHostState = snackbarHostState
+                    )
+                }
             }
-
-
         }
     }
 

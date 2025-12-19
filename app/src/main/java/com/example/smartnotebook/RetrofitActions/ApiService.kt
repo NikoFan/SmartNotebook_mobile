@@ -1,6 +1,9 @@
 package com.example.smartnotebook.RetrofitActions
 
+import com.example.smartnotebook.Model.ApiResponse
 import com.example.smartnotebook.Model.LoginRequest
+import com.example.smartnotebook.Model.RegisterConfirmRequest
+import com.example.smartnotebook.Model.RegisterInitRequest
 import com.example.smartnotebook.Model.RegisterRequest
 import com.example.smartnotebook.Model.UserResponse
 import retrofit2.Response
@@ -13,4 +16,10 @@ interface ApiService {
 
     @POST("login")
     suspend fun login(@Body request: LoginRequest) : Response<UserResponse>
+
+    @POST("register/init")
+    suspend fun initRegistration(@Body request: RegisterInitRequest): Response<ApiResponse>
+
+    @POST("register/confirm")
+    suspend fun confirmRegistration(@Body request: RegisterConfirmRequest): Response<ApiResponse>
 }

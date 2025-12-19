@@ -6,7 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartnotebook.Model.LoginRequest
+import com.example.smartnotebook.Model.RegisterInitRequest
 import com.example.smartnotebook.RetrofitActions.ApiFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -29,53 +32,43 @@ class SignUpActivityVM : ViewModel() {
         return regex.matches(email)
     }
 
-    fun registerUserFromDatabase(
-        login: String,
-        password: String,
-        mail: String
-    ){
-        _statusSignInError = null
-        if (login.isEmpty() or password.isEmpty()){
-            _statusSignInError = "Заполните пустые поля"
+    private val _uiState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
+    val uiState: StateFlow<RegistrationState> = _uiState
+
+    fun startRegistration(login: String, password: String, email: String) {
+        if (login.isEmpty() or password.isEmpty() or email.isEmpty()){
+            _statusSignInError = "Заполните все поля!"
             return
         }
-        if (!isValidCustomEmail(email = mail)){
-            _statusSignInError = "Почта не корректна"
+        if (!isValidCustomEmail(email)){
+            _statusSignInError = "Проверьте почту!"
             return
         }
-//        viewModelScope.launch {
-//            try {
-//                val request = LoginRequest(
-//                    user_login = login,
-//                    user_password = password)
-//                val response = ApiFactory.apiService.login(
-//                    request = request)
-//
-//                if (response.isSuccessful) {
-//                    val user = response.body()
-//                    // Успешная регистрация — перейти на главный экран
-//                    if (user != null){
-//                        println(user)
-//                        _newUserAccountId = user.user_id.toLong()
-//                    } else {
-//                        _statusSignInError = "Ошибка на сервере"
-//                    }
-//
-//                } else {
-//                    val errorBody = response.errorBody()?.string()
-//                    val errorMessage = try {
-//                        // Парсим JSON вручную или через Gson
-//                        val errorJson = JSONObject(errorBody)
-//                        errorJson.getString("detail") // ← "Invalid password"
-//                    } catch (e: Exception) {
-//                        "Проверьте данные"
-//                    }
-//                    _statusSignInError = errorMessage
-//                }
-//            } catch (e: Exception) {
-//                // Сетевая ошибка, таймаут и т.д.
-//                _statusSignInError = "Ошибка отправки данных"
-//            }
-//        }
+        viewModelScope.launch {
+            _uiState.value = RegistrationState.Loading
+            try {
+                val request = RegisterInitRequest(
+                    user_login = login,
+                    user_password = password,
+                    user_mail = email)
+                val response = ApiFactory.apiService.initRegistration(request)
+
+                if (response.isSuccessful) {
+                    _uiState.value = RegistrationState.SuccessInit(email) // Передаём email на след. экран
+                } else {
+                    val error = response.errorBody()?.string() ?: "Unknown error"
+                    _uiState.value = RegistrationState.Error(error)
+                }
+            } catch (e: Exception) {
+                _uiState.value = RegistrationState.Error(e.message ?: "Network error")
+            }
+        }
     }
+}
+
+sealed class RegistrationState {
+    object Idle : RegistrationState()
+    object Loading : RegistrationState()
+    data class SuccessInit(val email: String) : RegistrationState()
+    data class Error(val message: String) : RegistrationState()
 }
